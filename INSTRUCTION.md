@@ -2,8 +2,8 @@
 
 **Step 1: Download the Script**
 
-- Click on this link: [Kiran Bot Automation](https://github.com/ayobami1/Kiran-Bot-Automation/archive/refs/heads/main.zip) to download the script.
-- Once downloaded, unzip the file. You'll find a folder named "Kiran-Bot-Automation".
+- Click on this link: [Kiran Bot Automation](https://github.com/koolboks/Kiran-bot-Automation/archive/refs/heads/main.zip) to download the script.
+- Once downloaded, unzip the file. You'll find a folder named "Kiran-bot-Automation".
 
 **Step 2: Prepare Your Computer**
 
@@ -14,7 +14,7 @@
 
 **Step 3: Run the Script**
 
-- Open the "Kiran-Bot-Automation" folder that you extracted earlier.
+- Open the "Kiran-bot-Automation" folder that you extracted earlier.
 - Inside this folder, you'll find a file named "main.py". This is the script you want to run.
 - Now, let's open a Command Prompt. Here's how:
   1. Press the Windows key on your keyboard.
@@ -23,18 +23,18 @@
 - A black window will appear. This is called the Command Prompt.
 - In the Command Prompt, type the following and press Enter:
 
-cd path\to\Kiran-Bot-Automation
+cd path\to\Kiran-bot-Automation
 
-Replace "path\to\Kiran-Bot-Automation" with the actual path where you extracted the folder. For example, if you extracted it to your Desktop, you would type:
+Replace "path\to\Kiran-bot-Automation" with the actual path where you extracted the folder. For example, if you extracted it to your Desktop, you would type:
 
-cd Desktop\Kiran-Bot-Automation
+cd Desktop\Kiran-bot-Automation
 
 
 - Next, type or copy paste the following and press Enter:
 
 ```bash
 pip install -r requirements.txt
-```
+
 
 This will install all the necessary packages for the script to run.
 
