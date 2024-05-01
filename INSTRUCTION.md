@@ -34,7 +34,7 @@ cd Desktop\Kiran-bot-Automation
 
 ```bash
 pip install -r requirements.txt
-
+```
 
 This will install all the necessary packages for the script to run.
 
