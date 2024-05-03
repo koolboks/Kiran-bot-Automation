@@ -52,8 +52,14 @@ python main.py
 Lauching Application.....
 ```
 
+
 - Next go to the telegram bot and launch it 
  👉👉 [Visa Bot Filler ](https://t.me/BotFormFillerBot).
 
 - Then you are done follow the video i sent you earlier [Google drive](https://drive.google.com/drive/folders/1x-pSqVKe9OJD9FhtHE9pJqiL4O-3b8ur?usp=drive_link)   to run the whole bot successfully !
 
+
+
+**Install PyCharm (Optional):**
+   - If you prefer using an integrated development environment (IDE), you can download and install PyCharm Community Edition from JetBrains: [Download PyCharm](https://www.jetbrains.com/pycharm/download/).
+   - Follow the installation instructions provided by JetBrains.
