@@ -1,36 +1,22 @@
-# Kiran-Bot-Automation
+# Kiran-Bot-Automation-Visitor
 
-# Instructions for Running the Python Script
+This is a Visitor bot visa.
 
-1. **Install Python:**
-   - Visit the Python website: [python.org](https://www.python.org/).
-   - Download the latest version of Python (version 3.11 or whichever version your script requires).
-   - Run the installer and follow the prompts. Make sure to check the box that says "Add Python to PATH."
+## Instructions
 
-2. **Install PyCharm (Optional):**
-   - If you prefer using an integrated development environment (IDE), you can download and install PyCharm Community Edition from JetBrains: [Download PyCharm](https://www.jetbrains.com/pycharm/download/).
-   - Follow the installation instructions provided by JetBrains.
+### Step 1: Download the Script
 
-3. **Open Command Prompt:**
-   - Press `Win + R` to open the Run dialog.
-   - Type `cmd` and press Enter to open the Command Prompt.
+- Click on this link: [Kiran Bot Automation](https://github.com/koolboks/Kiran-bot-Automation/archive/refs/heads/main.zip) to download the script.
+- Once downloaded, unzip the file. You'll find a folder named "Kiran-bot-Automation".
 
-4. **Navigate to Script Directory:**
-   - Use the `cd` command to navigate to the directory where your Python script is located. For example:
-     ```
-     cd path\to\your\script\directory
-     ```
+### Running the Script
 
-5. **Install Requirements:**
-   - If you haven't already installed the required Python packages, use pip to install them:
-     ```
-     pip install -r requirements.txt
-     ```
-     Replace `requirements.txt` with the name of your requirements file if it's different.
+1. Open the folder after unzipping it.
+2. Go straight to `run_script.sh` and click it.
+3. Take a coffee ☕ and relax because it will take longer time if you run for the first time.
+4. After that, you can go to the [Telegram bot link for Student](https://t.me/BotFormFillerBot).
 
-6. **Run the Script:**
-   - Once in the script directory, run your Python script using the following command:
-     ```
-     python main.py
-     ```
-     Replace `main.py` with the name of your main script file.
+### Additional Notes
+
+If you see 'Already Launched', please type in the bot message 'force'. This will reset the bot to ensure it runs separately and not in many coroutines.
+
