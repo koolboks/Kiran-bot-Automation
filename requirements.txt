@@ -25,6 +25,7 @@ numpy==1.26.4
 opencv-python-headless==4.9.0.80
 packaging==24.0
 pillow==10.3.0
+loguru
 playwright==1.42.0
 proto-plus==1.23.0
 protobuf==4.25.3
