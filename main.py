@@ -1,102 +1,3 @@
-# import asyncio
-# import os
-#
-# from aiogram.client.default import DefaultBotProperties
-# from aiogram.enums import ParseMode
-# from aiogram.filters import CommandStart
-# from playwright.async_api import async_playwright
-# from aiogram import Bot, Dispatcher, types
-# from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-#
-# # Initialize the Telegram bot
-# API_TOKEN = '6827265715:AAEXwgOGDTCZPgSEU0V3otX_wj09w6PpFAU'
-# bot = Bot(token=API_TOKEN)
-# dp = Dispatcher()
-#
-# # Function to fill contact form
-# async def fill_contact_form(page):
-#     pass
-#     # Your existing code here...
-#
-# # Function to select group and agree
-# async def select_group_and_agree(page):
-#     pass
-#     # Your existing code here...
-#
-# # Function to send an alert message
-# async def send_alert(page, message, duration=5):
-#     pass
-#     # Your existing code here...
-#
-# # Main function to handle the form filling process
-# async def main():
-#     async with async_playwright() as p:
-#         pass
-#         # Your existing code here...
-#
-# # Function to greet the user
-# @dp.message(CommandStart())
-# async def start(message: types.Message):
-#     await message.reply("Welcome to Auto Form Filler for New Zealand Application!\n"
-#                         "How can I assist you?")
-#
-#
-# async def start_telegram() -> None:
-#     # Initialize Bot instance with default bot properties which will be passed to all API calls
-#     bot = Bot(token=API_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-#     # And the run events dispatching
-#     await dp.start_polling(bot)
-#
-#
-# # Function to display the menu
-# @dp.message()
-# async def menu(message: types.Message):
-#
-#     keyboard=InlineKeyboardMarkup(inline_keyboard =[[InlineKeyboardButton(text="Select Browser", callback_data='select_browser'),
-#         InlineKeyboardButton(text="Upload/Input Your Data", callback_data='upload_data'),
-#         InlineKeyboardButton(text="Start Form Filling", callback_data='start_form_filling')
-#     ]] )
-#
-#     await message.reply("Please select an option from the menu:", reply_markup=keyboard)
-#
-#
-# # Function to handle button clicks
-# @dp.callback_query()
-# async def process_callback(callback_query: types.CallbackQuery):
-#     if callback_query.data == 'select_browser':
-#         # Implement the logic to select browser
-#         print(callback_query.data)
-#         keyboard = InlineKeyboardMarkup(
-#             inline_keyboard=[[InlineKeyboardButton(text="FireFox", callback_data='firefox')],
-#                               [InlineKeyboardButton(text="Chrome", callback_data='chrome'),
-#                               InlineKeyboardButton(text="Webkit", callback_data='webkit')
-#                               ]])
-#
-#         await callback_query.message.reply("Please select an option:", reply_markup=keyboard)
-#         pass
-#     elif callback_query.data == 'upload_data':
-#         # Implement the logic to upload/input data
-#         print(callback_query.data)
-#         pass
-#     elif callback_query.data == 'start_form_filling':
-#         # Implement the logic to start form filling
-#         print(callback_query.data)
-#         pass
-#
-# # Function to handle other functionalities (to be implemented)
-# # @dp.message_handler(commands=['other_function'])
-#
-# # Function to handle inline keyboard button clicks (to be implemented)
-# # @dp.callback_query_handler()
-#
-# # Function to add outline keyboard (to be implemented)
-#
-# # Start the bot
-# if __name__ == '__main__':
-#     # asyncio.run(main())
-#
-#     asyncio.run(start_telegram())
-
 import os
 import asyncio
 
@@ -107,6 +8,10 @@ from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filte
 
 from config import TELEGRAM_TOKEN
 from manage_json import load_json, save_json
+from loguru import logger  as log
+
+
+telegram_bot_link = 'https://t.me/BotFormFillerBot'
 
 # Initialize the Telegram bot
 API_TOKEN = TELEGRAM_TOKEN
@@ -444,37 +349,12 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             # Run the main function asynchronously
             asyncio.create_task(run_main_async())
-
-            # # Define a function to run the main function in a separate thread
-            # def run_main_thread():
-            #     from new_zealand_ import main
-            #     try:
-            #         loop = asyncio.new_event_loop()
-            #         asyncio.set_event_loop(loop)
-            #         loop.run_until_complete(main(update=message, bot=update))
-            #     except KeyboardInterrupt:
-            #         new_data = {"is_launched": False, "user_confirmed": False}
-            #         save_json(new_data)
-            #         # message.reply_text("Bot has been stopped by user")
-            #     except Exception as e:
-            #         print(e)
-            #         pass
-            #         # new_data = {}
-            #         # new_data["is_launched"] = False
-            #         # save_json(new_data)
-            #     finally:
-            #         new_data = {"is_launched": False, "user_confirmed": False}
-            #         save_json(new_data)
-            #         print("Saved !")
-            #
-            #         import traceback
-            #         traceback.print_exc()
-            #
-            #         # message.reply_text(f"Bot has been stopped due to an error: {e}")
-            #
-            # # Start a new thread to run the main function
-            # main_thread = threading.Thread(target=run_main_thread)
-            # main_thread.start()
+        
+        elif data == 'force':
+            new_data["is_launched"] = False
+            save_json(new_data)
+            message = await update.message.reply_text("Cache Clear and Browser Restore !\n\n please use 'Y' to Launch again...",
+                                                      reply_to_message_id=update.message.message_id)
 
         elif data == "yes":
             new_data["user_confirmed"] = True
@@ -507,7 +387,12 @@ def check_file_name(file_name):
 def main():
     try:
 
-        print("Lauching Application.....")
+        log.info("Launching Application.........")
+        log.info("Application Launched Successfully\nYou don't have to come here often")
+        print('\n')
+        log.info(f"Please visit : {telegram_bot_link} to start bot")
+
+        
         application = ApplicationBuilder().token(API_TOKEN).build()
 
         application.add_handler(CommandHandler("start", start))
