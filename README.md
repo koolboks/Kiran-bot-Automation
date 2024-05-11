@@ -1,6 +1,6 @@
-# Kiran-Bot-Automation-Visitor
+# Kiran-bot-Automation
 
-This is a Visitor bot visa.
+This is a student bot visa.
 
 ## Instructions
 
