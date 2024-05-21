@@ -1,5 +1,6 @@
 import os
 import asyncio
+import signal
 
 from playwright.async_api import async_playwright
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -12,7 +13,7 @@ from loguru import logger  as log
 
 
 telegram_bot_link = 'https://t.me/BotFormFillerBot'
-
+running_task =None
 # Initialize the Telegram bot
 API_TOKEN = TELEGRAM_TOKEN
 
@@ -54,20 +55,25 @@ async def menu(update, context):
     # Load settings from the JSON file
     settings_data = load_json(filename="settings.json")
 
-    MANUAL = settings_data.get("MANUAL", "no")  # Default value "no" if not found
-    ALWAYS_SHOW_PREVIEW = settings_data.get("ALWAYS_SHOW_PREVIEW", "yes")  # Default value "yes" if not found
+    MANUAL = settings_data.get("MANUAL", False)  # Default value "no" if not found
+    ALWAYS_SHOW_PREVIEW = settings_data.get("ALWAYS_SHOW_PREVIEW", False)  # Default value "yes" if not found
     IS_LAUNCHED = settings_data.get("IS_LAUNCHED", "yes")
 
     keyboard = [
         [
-            InlineKeyboardButton(f"Manual ✅" if MANUAL.lower() == "yes" else "Manual ❌", callback_data="toggle_manual"),
-            InlineKeyboardButton("Preview ✅" if ALWAYS_SHOW_PREVIEW.lower() == "yes" else "Preview ❌",
-                                 callback_data="toggle_preview"),
+            InlineKeyboardButton(
+                f"Manual ✅" if settings_data.get("MANUAL", False) else "Manual ❌",
+                callback_data="toggle_manual"),
+            InlineKeyboardButton(
+                "Preview ✅" if settings_data.get("ALWAYS_SHOW_PREVIEW",
+                                                 False) else "Preview ❌",
+                callback_data="toggle_preview"),
         ],
         [InlineKeyboardButton("Select Browser 🌐", callback_data="select_browser")],
         [InlineKeyboardButton("Upload Data 📤", callback_data="upload_data")],
-        [InlineKeyboardButton( "Launch." if settings_data.get("IS_LAUNCHED", "yes").lower() == "yes" else "Launch ..",
-                              callback_data="start_form_filling")]
+        [InlineKeyboardButton(
+            "Launch." if settings_data.get("IS_LAUNCHED", False) else "Launch ..",
+            callback_data="start_form_filling")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -77,7 +83,7 @@ async def menu(update, context):
 
 
 async def process_callback(update, context):
-    global bot_manual_setting, preview,is_launched
+    global bot_manual_setting, preview, is_launched
 
     query = update.callback_query
     data = query.data
@@ -88,61 +94,73 @@ async def process_callback(update, context):
 
         if data == "toggle_manual":
             bot_manual_setting = not bot_manual_setting
-            settings_data["MANUAL"] = "yes" if bot_manual_setting else "no"
-
+            settings_data["MANUAL"] = not settings_data['MANUAL']
+            # print(' settings_data["MANUAL"]',   settings_data["MANUAL"])
             # Save the updated settings to the JSON file
             save_json(settings_data, filename="settings.json")
 
-            settings_data = load_json('settings.json')
+
+            await query.answer("Automatic Enabled" if not settings_data['MANUAL'] else "Manual Mode Enabled", show_alert=False)
             # Update the inline keyboard buttons with the new settings
             keyboard = [
                 [
-                    InlineKeyboardButton(f"Manual ✅" if settings_data.get("MANUAL", "no").lower() == "yes" else "Manual ❌",
-                                         callback_data="toggle_manual"),
                     InlineKeyboardButton(
-                        "Preview ✅" if settings_data.get("ALWAYS_SHOW_PREVIEW", "yes").lower() == "yes" else "Preview ❌",
-                        callback_data="toggle_preview"),
-                ],
-                [InlineKeyboardButton("Select Browser 🌐", callback_data="select_browser")],
-                [InlineKeyboardButton("Upload Data 📤", callback_data="upload_data")],
-                [InlineKeyboardButton( "Launch." if settings_data.get("IS_LAUNCHED", "yes").lower() == "yes" else "Launch ..",
-                                      callback_data="start_form_filling")]
-            ]
-            reply_markup = InlineKeyboardMarkup(keyboard)
-            await query.edit_message_reply_markup(reply_markup=reply_markup)
-
-
-
-
-
-        elif data == "toggle_preview":
-            preview = not preview
-            settings_data["ALWAYS_SHOW_PREVIEW"] = "yes" if preview else "no"
-
-            # Save the updated settings to the JSON file
-            save_json(settings_data, filename="settings.json")
-
-            settings_data = load_json('settings.json')
-            # Update the inline keyboard buttons with the new settings
-            keyboard = [
-                [
-                    InlineKeyboardButton(f"Manual ✅" if settings_data.get("MANUAL", "no").lower() == "yes" else "Manual ❌",
-                                         callback_data="toggle_manual"),
+                        f"Manual ✅" if settings_data.get("MANUAL",False)  else "Manual ❌",
+                        callback_data="toggle_manual"),
                     InlineKeyboardButton(
-                        "Preview ✅" if settings_data.get("ALWAYS_SHOW_PREVIEW", "yes").lower() == "yes" else "Preview ❌",
+                        "Preview ✅" if settings_data.get("ALWAYS_SHOW_PREVIEW",
+                                                         False) else "Preview ❌",
                         callback_data="toggle_preview"),
                 ],
                 [InlineKeyboardButton("Select Browser 🌐", callback_data="select_browser")],
                 [InlineKeyboardButton("Upload Data 📤", callback_data="upload_data")],
                 [InlineKeyboardButton(
-                     "Launch." if settings_data.get("IS_LAUNCHED", "yes").lower() == "yes" else "Launch ..",
+                    "Launch." if settings_data.get("IS_LAUNCHED", False) else "Launch ..",
                     callback_data="start_form_filling")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             await query.edit_message_reply_markup(reply_markup=reply_markup)
 
 
+
+
+
+
+        elif data == "toggle_preview":
+            await query.answer("Preview toggle !")
+
+            settings_data["ALWAYS_SHOW_PREVIEW"] = not settings_data["ALWAYS_SHOW_PREVIEW"]
+            # Save the updated settings to the JSON file
+            save_json(settings_data, filename="settings.json")
+
+            await query.answer("Preview Enabled" if settings_data['ALWAYS_SHOW_PREVIEW'] else "Preview  Mode Disabled", show_alert=True)
+            # Update the inline keyboard buttons with the new settings
+
+
+            # Update the inline keyboard buttons with the new settings
+            keyboard = [
+                [
+                    InlineKeyboardButton(
+                        f"Manual ✅" if settings_data.get("MANUAL", False) else "Manual ❌",
+                        callback_data="toggle_manual"),
+                    InlineKeyboardButton(
+                        "Preview ✅" if settings_data.get("ALWAYS_SHOW_PREVIEW",False)  else "Preview ❌",
+                        callback_data="toggle_preview"),
+                ],
+                [InlineKeyboardButton("Select Browser 🌐", callback_data="select_browser")],
+                [InlineKeyboardButton("Upload Data 📤", callback_data="upload_data")],
+                [InlineKeyboardButton(
+                    "Launch." if settings_data.get("IS_LAUNCHED", False) else "Launch ..",
+                    callback_data="start_form_filling")]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await query.edit_message_reply_markup(reply_markup=reply_markup)
+            # Save the updated settings to the JSON file
+            save_json(settings_data, filename="settings.json")
+
+
         elif data == 'select_browser':
+            await query.answer("Select Browser !")
             keyboard = [
                 [InlineKeyboardButton(text="FireFox", callback_data='firefox')],
                 [InlineKeyboardButton(text="Chrome", callback_data='chrome'),
@@ -153,15 +171,18 @@ async def process_callback(update, context):
                                            reply_markup=reply_markup)
         elif data == 'upload_data':
             # Implement the logic to upload/input data
+            await query.answer()
+
             await context.bot.send_message(chat_id=update.effective_message.chat_id,
                                            text="Please send me the data.csv now !")
 
 
         elif data == "start_form_filling":
+            await query.answer("button Clicked")
 
             is_launched = not is_launched
 
-            settings_data["IS_LAUNCHED"] = "yes" if is_launched else "no"
+            settings_data["IS_LAUNCHED"] = not settings_data["IS_LAUNCHED"]
 
             save_json(settings_data, filename="settings.json")
 
@@ -171,16 +192,18 @@ async def process_callback(update, context):
 
             keyboard = [
                 [
-                    InlineKeyboardButton(f"Manual ✅" if settings_data.get("MANUAL", "no").lower() == "yes" else "Manual ❌",
-                                         callback_data="toggle_manual"),
                     InlineKeyboardButton(
-                        "Preview ✅" if settings_data.get("ALWAYS_SHOW_PREVIEW", "yes").lower() == "yes" else "Preview ❌",
+                        f"Manual ✅" if settings_data.get("MANUAL", False) else "Manual ❌",
+                        callback_data="toggle_manual"),
+                    InlineKeyboardButton(
+                        "Preview ✅" if settings_data.get("ALWAYS_SHOW_PREVIEW",
+                                                         False) else "Preview ❌",
                         callback_data="toggle_preview"),
                 ],
                 [InlineKeyboardButton("Select Browser 🌐", callback_data="select_browser")],
                 [InlineKeyboardButton("Upload Data 📤", callback_data="upload_data")],
                 [InlineKeyboardButton(
-                    "Launch." if settings_data.get("IS_LAUNCHED", "yes").lower() == "yes" else "Launch ..",
+                    "Launch." if settings_data.get("IS_LAUNCHED") else "Launch ..",
                     callback_data="start_form_filling")]
             ]
 
@@ -273,12 +296,22 @@ async def process_callback(update, context):
 #         context.bot.send_message(chat_id=update.effective_chat.id,
 #                                  text="Okay, staying on the current page.")
 
-import threading
 
-terminate_event = threading.Event()
+import subprocess
+import sys
+
+def restart_script():
+    """Restarts the current script by spawning a new process and then exiting."""
+    print("Restarting the script...")
+    python_executable = sys.executable
+    NZ_SCRIPT = 'main.py'
+    subprocess.Popen([python_executable, NZ_SCRIPT])
+    os.kill(os.getpid(), signal.SIGINT)
+
 
 
 async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global running_task
     if update.message.document:
         document = update.message.document
         # print(document)
@@ -348,7 +381,8 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     # message.reply_text(f"Bot has been stopped due to an error: {e}")
 
             # Run the main function asynchronously
-            asyncio.create_task(run_main_async())
+            running_task = asyncio.create_task(run_main_async())
+
         
         elif data == 'force':
             new_data["is_launched"] = False
@@ -366,17 +400,24 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             new_data["user_confirmed"] = False
             save_json(new_data)
             await update.message.reply_text("Ok waiting for your yes", reply_to_message_id=update.message.message_id)
-        elif data == "stop":
-            new_data["user_confirmed"] = False
+        elif data == "stop" or 's':
+            new_data = {"is_launched": False, "user_confirmed": False}
             save_json(new_data)
-            stop_main_thread()
-            await update.message.reply_text("stopping the chrome now", reply_to_message_id=update.message.message_id)
+            try:
 
+                await update.message.reply_text("stopping the chrome now use 'y' to relaunch",
+                                                reply_to_message_id=update.message.message_id)
+
+                r = running_task.cancel("OK cancleed")
+            except:
+
+                await update.message.reply_text("No Chrome is currently open use 'Y' to re launch",
+                                                reply_to_message_id=update.message.message_id)
+
+    # raise Exception("Terminating the chrome...")
         # Wait for the user's response
 
 
-def stop_main_thread():
-    terminate_event.set()  # Set the Event to signal termination
 
 
 def check_file_name(file_name):
