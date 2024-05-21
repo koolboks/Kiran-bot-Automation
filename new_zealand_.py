@@ -103,8 +103,15 @@ async def select_group_and_agree(page, data):
 def transform_data(data):
     transformed_data = {}
     for row in data:
-        if len(row) >= 2:  # Ensure that the row has at least two elements
+        if len(row)>4:
+            row = row[:4]
             transformed_data[row[0]] = row[-1]
+
+        elif len(row)>=2:
+            transformed_data[row[0]] = row[-1]
+
+        # elif len(row) ==4:
+        #     transformed_data[row[0]] = row[-2]
         else:
             print(f"Ignoring row: {row}. Insufficient data.")
     return transformed_data
@@ -330,8 +337,7 @@ async def is_next_page(update, bot, page=None, mode=None):
         await page.wait_for_load_state("domcontentloaded")
 
 
-async def is_error_page(update, bot,message=None):
-
+async def is_error_page(update, bot, message=None):
     print("error Detected")
     # if bot_manual_setting:
     # await update.edit_text("Do you want to continue to next page? Reply with 'Yes' or 'No'")
@@ -359,9 +365,9 @@ async def download_pdf_preview(page, bot, index=''):
             await page.click('input[type="submit"][value="PDF Preview"]')
             try:
                 # Check if we have a pop up
-                await check_pop_up(page, bot, index='4') # we will quickly cehck if there is pop up
+                await check_pop_up(page, bot, index='4')  # we will quickly cehck if there is pop up
 
-                await page.click('input[type="submit"][value="PDF Preview"]') # click the pdf again after 3 secs
+                await page.click('input[type="submit"][value="PDF Preview"]')  # click the pdf again after 3 secs
             except:
                 pass
 
@@ -372,7 +378,6 @@ async def download_pdf_preview(page, bot, index=''):
             #         pass # Check if there is any errror in the page 7
             # except:
             #     pass
-
 
             download = await download_info.value
             print(download)
@@ -420,9 +425,7 @@ async def get_error_message(page):
     return None
 
 
-
-async def check_pop_up(page, update=None,bot=None, index=''):
-
+async def check_pop_up(page, update=None, bot=None, index=''):
     # wait for at least 5 secs
     await delay(5)
     popup_exists = await page.query_selector('#popup_container')
@@ -436,7 +439,6 @@ async def check_pop_up(page, update=None,bot=None, index=''):
 
         # await update.edit_text("Downloading pdf.....")
         # await download_pdf_preview(page, bot, index)
-
 
     return popup_exists is not None
 
@@ -1218,7 +1220,6 @@ async def handle_radio_option(page, question_id, option_value):
     # print("handle_radio_option",option_value, question_id)
     option_bool = option_value.lower() == 'no'
 
-
     # Determine the option ID based on the boolean value
     option_id = f"{question_id}_{int(option_bool) + 1}"
 
@@ -1229,9 +1230,8 @@ async def handle_radio_option(page, question_id, option_value):
 
 
 async def handle_text_input(page, input_id, input_value, should_fill):
-    if input_id == "QSpecialEducationServicesDetails": # The QSpecialEducationServicesDetails is not same to the handle input text
+    if input_id == "QSpecialEducationServicesDetails":  # The QSpecialEducationServicesDetails is not same to the handle input text
         input_id = "QEducationServiceDetails"
-
 
     if should_fill:
         # print(f"#{input_id}")
@@ -1285,8 +1285,8 @@ async def seventh_page(update, page, data):
 
     # Handle Current Charges question
     current_charges_option, current_charges_details = await handle_question_7(page, "QCurrentCharges",
-                                                                            data.get("QCurrentCharges", "No"),
-                                                                            data.get("QCurrentChargesDetails", ""))
+                                                                              data.get("QCurrentCharges", "No"),
+                                                                              data.get("QCurrentChargesDetails", ""))
 
     # Continue to the next page
 
@@ -1308,7 +1308,6 @@ async def handle_radio_option_7(page, question_id, option_value):
         option_id = f"{question_id}_2"  # Select the first option for "No" (default)
     await page.click(f"#{option_id}")
     return option_id
-
 
 
 async def handle_text_input_7(page, input_id, input_value, should_fill):
@@ -1358,8 +1357,7 @@ async def eighth_page(update, page, data):
 
     await delay()
 
-
-##### TRY THE JOB TITLE AGAIN #######
+    ##### TRY THE JOB TITLE AGAIN #######
     # Handle Type of Work/Occupation/Job Title
     await update.edit_text("Entering Type of Work/Occupation/Job Title...")
     job_title = data.get("QEmployeeHistoryRe-0-QTypeWork", "")
@@ -1403,6 +1401,7 @@ async def eighth_page(update, page, data):
     # await update.edit_text("Moving to the next page...")
     # await page.click('input[name="_continueButton"]')
 
+
 ######    ######     ######    ######    ######    ######    ######    ######    ######    ######
 
 ######    ######     ######    ######    ######    ######    ######    ######    ######    ######
@@ -1436,13 +1435,10 @@ async def ninth_page(update, page, data):
             # Select year
             await page.select_option("#rptNZContacts-0-QCDOB_year", value=dob_year)
 
-
-
         # Select the relationship to the contact in New Zealand
         relationship_value = data.get("RelationshipValue", "")
-        if relationship_value: #rptNZContacts-0-QCRelationship
+        if relationship_value:  # rptNZContacts-0-QCRelationship
             await page.select_option("#rptNZContacts-0-QCRelationship", value=relationship_value)
-
 
         address = data.get("Address", "")
         telephone_cc = data.get("TelephoneCC", "")
@@ -1461,7 +1457,6 @@ async def ninth_page(update, page, data):
         await page.fill("#rptNZContacts-0-QCFamilyName", family_name)
         await page.fill("#rptNZContacts-0-GivenFirstNames", given_names)
 
-
         await page.fill("#rptNZContacts-0-QCAddress1", address)
         await page.fill("#rptNZContacts-0-QCTelephone_cc", telephone_cc)
         await page.fill('#rptNZContacts-0-QCTelephone_ac', telephone_ac)
@@ -1471,18 +1466,13 @@ async def ninth_page(update, page, data):
         await page.fill("#rptNZContacts-0-QCMobile_cc", mobile_telephone_cc)
         await page.fill('#rptNZContacts-0-QCMobile_num', mobile_telephone_num)
         await  delay()
-        await page.fill("#rptNZContacts-0-QCMobile_cc", mobile_telephone_cc) # again
-
-
-
+        await page.fill("#rptNZContacts-0-QCMobile_cc", mobile_telephone_cc)  # again
 
         await page.fill("#rptNZContacts-0-QCEmail", email)
 
 
     elif contacts_in_nz.lower() == "no":
         await page.check("#QNZContacts_2")
-
-
 
 
 ######    ######     ######    ######    ######    ######    ######    ######    ######    ######
@@ -1631,9 +1621,9 @@ async def ninth_page(update, page, data):
 #     else:
 #         await page.click('input#QApplyOnBehalf_2')  # Click "No" option
 
-    # Continue to the next page
-    # await update.edit_text("Moving to the next page...")
-    # await page.click('input[name="_continueButton"]')
+# Continue to the next page
+# await update.edit_text("Moving to the next page...")
+# await page.click('input[name="_continueButton"]')
 
 async def tenth_page(update, page, data):
     # Retrieve values from the CSV file using data.get
@@ -1647,8 +1637,6 @@ async def tenth_page(update, page, data):
     }
     apply_on_behalf_type_key = data.get("QApplyOnBehalfType", "Licensed immigration adviser")
     on_behalf_id = apply_on_behalf_type_map.get(apply_on_behalf_type_key, "QApplyOnBehalfType_1")
-
-
 
     limited_details = data.get("QLimitedDetails", "")
     licence_number = data.get("QLicenceNumber", "")
@@ -1670,10 +1658,6 @@ async def tenth_page(update, page, data):
 
         await page.click(f'#{on_behalf_id}')
 
-
-
-
-
         # Check if the selected option should be "Full" for the third question
 
         # Retrieve values from the CSV file using data.get
@@ -1687,10 +1671,8 @@ async def tenth_page(update, page, data):
         }
 
         # Click the select element and choose the option corresponding to the licence details key
-        await page.select_option('#QLicenceDetails', value=licence_details_map.get(licence_details_key, "1a657404-e726-4846-bb5b-84e7796e8e51"))
-
-
-
+        await page.select_option('#QLicenceDetails', value=licence_details_map.get(licence_details_key,
+                                                                                   "1a657404-e726-4846-bb5b-84e7796e8e51"))
 
         # Fill in the details for the additional fields
         await page.fill('#QLimitedDetails', limited_details)
@@ -1708,8 +1690,8 @@ async def tenth_page(update, page, data):
 
         # QAssistingPersonTelephone_num
 
-        #QAssistingPersonMobile_cc
-        #QAssistingPersonMobile_num
+        # QAssistingPersonMobile_cc
+        # QAssistingPersonMobile_num
         await page.fill('#QAssistingPersonMobile_cc', assisting_person_mobile)
         await page.fill('#QAssistingPersonMobile_num', assisting_person_mobile)
 
@@ -1738,6 +1720,8 @@ async def main(update=None, bot=None):
             context = await browser.new_context()
             page = await context.new_page()
 
+
+
             url = "https://eforms.online.immigration.govt.nz/igms/eforms/online-services/new/Student%20Visa%20Application"
 
             # url='https://eforms.online.immigration.govt.nz/igms/eforms/online-services/SVA240434094/step/4'
@@ -1746,7 +1730,7 @@ async def main(update=None, bot=None):
             # Read data from CSV file
             with open("data.csv", "r") as csv_file:
                 reader = csv.reader(csv_file)
-                data = next(reader)  # Assuming a single row in the CSV file
+                # data = next(reader)  # Assuming a single row in the CSV file
                 data = transform_data(list(reader))
 
             # Login credentials
@@ -1938,7 +1922,6 @@ async def main(update=None, bot=None):
             await update.edit_text("Downloading pdf.....")
             await download_pdf_preview(page, bot, index='4')
 
-
             recent_message = await is_next_page(update, bot=bot, page=page)  # should i proceed to next page or not?
             if recent_message:
                 update = recent_message
@@ -1946,11 +1929,6 @@ async def main(update=None, bot=None):
             await handle_next_button(page, update, bot)  # this is Page 4
 
             # input("wait first bro ")
-
-
-
-
-
 
             await fifth_page(update, page, data)
 
@@ -1964,10 +1942,6 @@ async def main(update=None, bot=None):
                 update = recent_message
 
             await handle_next_button(page, update, bot)  # this is Page 5
-
-
-
-
 
             await sixth_page(update, page, data)
 
@@ -1983,10 +1957,6 @@ async def main(update=None, bot=None):
 
             await handle_next_button(page, update, bot)  # this is Page 6
 
-
-
-
-
             await seventh_page(update, page, data)
 
             await update.edit_text("Downloading pdf.....")
@@ -1996,17 +1966,13 @@ async def main(update=None, bot=None):
 
             # await check_pop_up(page,update,bot,index='7')
 
-
-
             recent_message = await is_next_page(update, bot=bot, page=page)  # should i proceed to next page or not?
             if recent_message:
                 update = recent_message
 
             await handle_next_button(page, update, bot)  # this is Page 7
 
-
             ### Start eight page
-
 
             await eighth_page(update, page, data)
 
@@ -2023,15 +1989,10 @@ async def main(update=None, bot=None):
 
             await handle_next_button(page, update, bot)  # this is Page 8
 
-
-
-
             await ninth_page(update, page, data)
 
             await update.edit_text("Downloading pdf.....")
             await download_pdf_preview(page, bot, index='9')
-
-
 
             # Check if we have a pop up
 
@@ -2043,10 +2004,7 @@ async def main(update=None, bot=None):
 
             await handle_next_button(page, update, bot)  # this is Page 8
 
-
-
-
-            await tenth_page(update,page,data)
+            await tenth_page(update, page, data)
 
             await update.edit_text("Downloading pdf.....")
             await download_pdf_preview(page, bot, index='10')
@@ -2067,7 +2025,13 @@ async def main(update=None, bot=None):
 
             ## END OF FIRsT PAGE ######
 
-            input("Wait ")
+            await bot.message.reply_text(
+                "Thank you i am Done ! please Upload the necessary docs and use 'stop or s' or  CTRL + C to Close me",
+                reply_to_message_id=bot.message.message_id)
+
+            while 1:
+                await asyncio.sleep(2)
+                await browser.close()
     except KeyboardInterrupt:
 
         new_data = {"is_launched": False, "user_confirmed": False}
@@ -2097,12 +2061,9 @@ async def main(update=None, bot=None):
         new_data = {"is_launched": False, "user_confirmed": False}
         save_json(new_data)
         print("HIII save by finally this is for the reasone! ")
+        # settings_data = load_json(filename="settings.json")
         recent_message = await bot.message.reply_text(
             f"There is an error: {e}\npossibly your internet make sure your internet is good\nPlease restart with 'y' '",
             reply_to_message_id=bot.message.message_id)
 
-
 # asyncio.run(main())
-
-
-
