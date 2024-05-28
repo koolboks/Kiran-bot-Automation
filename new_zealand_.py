@@ -45,11 +45,11 @@ async def upload_files(page):
 async def fill_contact_form(page, data):
     # Telephone (landline)
     await page.type("#TelephoneLandline_cc", data["TelephoneLandline_cc"])
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)
     await page.type("#TelephoneLandline_ac", data["TelephoneLandline_ac"])
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)
     await page.type("#TelephoneLandline_num", data["TelephoneLandline_num"])
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)
 
     # Mobile number
     await page.fill("#MobileNumber_cc", data["MobileNumber_cc"])
@@ -60,28 +60,28 @@ async def fill_contact_form(page, data):
 
     # Email
     await page.type("#QAppEmailAddr", data["QAppEmailAddr"])
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)
 
     # Confirm email
     await page.type("#QConfirmappEmailAddr", data["QConfirmappEmailAddr"])
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)
 
     # Choose "Yes" or "No" for postal address same as residential address
     same_address = "1" if data["QSameCurrentAddr_1"].lower() == "yes" else "2"
     await page.click(f"#QSameCurrentAddr_{same_address}")
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)
 
     # Choose "Yes" or "No" for being in the same country as residential address
     same_country = "1" if data["QCurrentLocation_1"].lower() == "yes" else "2"
     await page.click(f"#QCurrentLocation_{same_country}")
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)
 
 
 async def select_group_and_agree(page, data):
     # Choose "Yes" or "No" for group application
     group_application = "1" if data["QApplyingForGroup_2"].lower() == "yes" else "2"
     await page.click(f"#QApplyingForGroup_{group_application}")
-    await asyncio.sleep(1)
+    await asyncio.sleep(2)
 
     # # Click the "I agree" checkbox
     # agree_terms = "1" if data["QDeclaration"].lower() == "yes" else "2"
@@ -449,11 +449,11 @@ async def third_page(update, page, data):
     # Fill in the state/province/region
     await page.select_option("#ResidentialCountryRegionStateLookupID",
                              data["ResidentialCountryRegionStateLookupID"])
-    await asyncio.sleep(1)  # 1 second delay
+    await asyncio.sleep(2)  # 1 second delay
 
     # Fill in the ZIP/post code
     await page.fill("#QAppPostCode", data["QAppPostCode"])
-    await asyncio.sleep(1)  # 1 second delay
+    await asyncio.sleep(2)  # 1 second delay
 
     # Fill contact form
     await fill_contact_form(page, data)
