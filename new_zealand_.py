@@ -117,182 +117,6 @@ def transform_data(data):
     return transformed_data
 
 
-# async def main(update=None):
-#     async with async_playwright() as p:
-#         browser = await p.chromium.launch(headless=False)
-#         context = await browser.new_context()
-#         page = await context.new_page()
-#
-#         url = "https://eforms.online.immigration.govt.nz/igms/eforms/online-services/new/Student%20Visa%20Application"
-#         await page.goto(url)
-#
-#         # Read data from CSV file
-#         # Read data from CSV file
-#
-#
-#         # with open("data.csv", "r") as csv_file:
-#         #     reader = csv.DictReader(csv_file)
-#         #     print(list(reader))
-#         #     data = next(reader)  # Assuming a single row in the CSV file
-#         #
-#         #     print(data)
-#
-#         # Read data from CSV file
-#         with open("data.csv", "r") as csv_file:
-#             reader = csv.reader(csv_file)
-#             data = next(reader)  # Assuming a single row in the CSV file
-#             data = transform_data(list(reader))
-#
-#         # Assuming a single row in the CSV file
-#         # data = transform_data(list(reader))
-#         # print(data)
-#
-#         # Login credentials
-#         await update.edit_text("Logging in.........")
-#         await page.fill("#signInName", data["signInName"])
-#         await asyncio.sleep(1)
-#         await page.fill("#password", data["password"])
-#         await asyncio.sleep(1)
-#         await update.edit_text("Clicking Next button.........")#, reply_to_message_id=update.message.message_id)
-#         await page.click("button#next")
-#         await asyncio.sleep(0.1)
-#         await page.wait_for_load_state("load")
-#
-#         # Wait for the page to load
-#         await page.wait_for_selector("#SCStudentVisa_1")
-#         await asyncio.sleep(.1)
-#
-#         # Click "Yes" or "No" for "Are you applying for a student visa?"
-#         student_visa_option = "1" if data["SCStudentVisa"].lower() == "yes" else "2"
-#         await page.click(f"#SCStudentVisa_{student_visa_option}")
-#         await asyncio.sleep(0.1)
-#
-#         # Click "Yes" or "No" for "Do you have a MasterCard, Visa or UnionPay card to pay for this application?"
-#         credit_card_option = "1" if data["SCCreditCard"].lower() == "yes" else "2"
-#         await page.click(f"#SCCreditCard_{credit_card_option}")
-#         await asyncio.sleep(0.1)
-#
-#         # Click "Yes" or "No" for "Are you applying for a student visa as a dependent child of a New Zealand visa holder or applicant?"
-#         group_app_option = "1" if data["SCGroupApp"].lower() == "yes" else "2"
-#         await page.click(f"#SCGroupApp_{group_app_option}")
-#         await asyncio.sleep(0.1)
-#
-#         # Click "Yes" or "No" for "Are you an Australian citizen or permanent resident?"
-#         australian_option = "1" if data["SCAustralian"].lower() == "yes" else "2"
-#         await page.click(f"#SCAustralian_{australian_option}")
-#         await asyncio.sleep(0.1)
-#
-#         # Click "Yes" or "No" for "Have you claimed refugee or protection status in New Zealand?"
-#         refugee_option = "1" if data["SCRefugee"].lower() == "yes" else "2"
-#         await page.click(f"#SCRefugee_{refugee_option}")
-#         await asyncio.sleep(0.1)
-#
-#         # Click "Yes" or "No" for "Are you applying under a special Vocational Trainees category?"
-#         vocational_trainee_option = "1" if data["SCVocationalTrainee"].lower() == "yes" else "2"
-#         await page.click(f"#SCVocationalTrainee_{vocational_trainee_option}")
-#         await asyncio.sleep(0.1)
-#
-#         await page.evaluate('window.scrollTo(0, document.body.scrollHeight)')
-#         await asyncio.sleep(6)
-#         await page.click("button.next")
-#         await page.wait_for_load_state("networkidle")
-#
-#         # Fill in personal information
-#         await page.type("#QFamilyName", data["QFamilyName"])
-#         await page.type("#QFirstName", data["QFirstName"])
-#         await page.type("#QMiddleName", data["QMiddleName"])
-#
-#         # Select title
-#         await page.select_option("#Qtitle", label=data["Qtitle"])
-#
-#         # Fill in additional other names section
-#         await page.fill("#OtherNames-0-QFamilyNameOther", data["OtherNames-0-QFamilyNameOther"])
-#         await asyncio.sleep(3)
-#         await page.fill("#OtherNames-0-QFirstNameOther", data["OtherNames-0-QFirstNameOther"])
-#         await asyncio.sleep(3)
-#         await page.fill("#OtherNames-0-QMiddleNameOther", data["OtherNames-0-QMiddleNameOther"])
-#         await asyncio.sleep(3)
-#         await page.select_option("#OtherNames-0-NameType", label=data["OtherNames-0-NameType"])
-#
-#         await asyncio.sleep(1)
-#
-#         # Select gender
-#         gender_option = "1" if data["QGender"].lower() == "female" else "2"
-#         await page.click(f"#QGender_{gender_option}")
-#
-#         # Select date of birth
-#         await page.select_option("#QDOB_day", label=data["QDOB_day"])
-#         await page.select_option("#QDOB_month", label=data["QDOB_month"])
-#         await page.select_option("#QDOB_year", label=data["QDOB_year"])
-#
-#         # Select country of birth
-#         await page.select_option("#QCountryOfBirth", label=data["QCountryOfBirth"])
-#         await asyncio.sleep(3)
-#
-#         # Fill the State/Province/Region field
-#         await page.fill("#QStateOfBirth", data["QStateOfBirth"])
-#         await asyncio.sleep(1)
-#
-#         # Fill the Town/City
-#         # Fill the Town/City field
-#         await page.fill("#QCityOfBirth", data["QCityOfBirth"])
-#
-#         # Fill the Passport Number field
-#         await page.fill("#QPassportNbr", data["QPassportNbr"])
-#
-#         # Select the country or territory of the passport by its text
-#         await page.evaluate('window.scrollBy(0, 300)')
-#         await asyncio.sleep(3)
-#         await page.select_option("#QPassportIssueCountry", label=data["QPassportIssueCountry"])
-#         await asyncio.sleep(3)
-#
-#         # Choose the expiry date for the passport
-#         await page.select_option("#QPassportExpiryDate_day", value=data["QPassportExpiryDate_day"])
-#         await asyncio.sleep(1)
-#         await page.select_option("#QPassportExpiryDate_month", value=data["QPassportExpiryDate_month"])
-#         await asyncio.sleep(1)
-#         await page.select_option("#QPassportExpiryDate_year", value=data["QPassportExpiryDate_year"])
-#         await asyncio.sleep(1)
-#
-#         # Fill the input field with "Nil" National Identity Number
-#         # await page.fill("#QNationalIDNbr", "Nil") #National identity number
-#         await asyncio.sleep(1)
-#
-#         # Select "Single" option
-#         await page.select_option("#QPartnershipStatus", label=data["QPartnershipStatus"])
-#
-#         # Choose "No"
-#         await page.click("#QAppliedVisaBefore_2")  # Have you previously applied for a visa for New Zealand?
-#
-#         # Resdential Addresss
-#         # Fill in the country
-#         await page.select_option("#QAppCountry", data["QAppCountry"])
-#         await asyncio.sleep(2)  # 1 second delay
-#
-#         # Fill in the street address
-#         await page.type("#QAppAddress1", data["QAppAddress1"])
-#         await asyncio.sleep(2)  # 1 second delay
-#
-#         # Fill in the town/city
-#         await page.type("#QAppCity", data["QAppCity"])
-#         await asyncio.sleep(1)  # 1 second delay
-#
-#         # Fill in the state/province/region
-#         await page.select_option("#ResidentialCountryRegionStateLookupID",
-#                                  data["ResidentialCountryRegionStateLookupID"])
-#         await asyncio.sleep(1)  # 1 second delay
-#
-#         # Fill in the ZIP/post code
-#         await page.type("#QAppPostCode", data["QAppPostCode"])
-#         await asyncio.sleep(1)  # 1 second delay
-#
-#         # Fill contact form
-#         await fill_contact_form(page, data)
-#
-#         # Select group and Agree
-#         await select_group_and_agree(page, data)
-#
-#         input("Wait ")
 async def is_next_page(update, bot, page=None, mode=None):
     if bot_manual_setting:
         # await update.edit_text("Do you want to continue to next page? Reply with 'Yes' or 'No'")
@@ -309,13 +133,19 @@ async def is_next_page(update, bot, page=None, mode=None):
                 await update.edit_text("Clicking Next button.........")
                 if mode == 'login':
                     await page.click("button#next")
+                    # Check if we have a pop up
+                    await check_pop_up(page, bot, index='4', button='button#next')  # First we check if there is error mesage
+
+                    await page.wait_for_load_state('networkidle')
 
 
                 else:
                     await page.click("button.next")
+                                # Check if we have a pop up
+                    await check_pop_up(page, bot, index='4', button='button.next')  # First we check if there is error mesage
 
-                await asyncio.sleep(0.5)
-                await page.wait_for_load_state("domcontentloaded")
+                # await asyncio.sleep(0.5)
+                await page.wait_for_load_state('networkidle')
 
                 break  # Exit the loop if user_confirmed is True
 
@@ -330,11 +160,16 @@ async def is_next_page(update, bot, page=None, mode=None):
 
         if mode == 'login':
             await page.click("button#next")
+            # Check if we have a pop up
+            await check_pop_up(page, bot, index='4', button='button#next')  # First we check if there is error mesage
+
         else:
             await page.click("button.next")
 
-        await asyncio.sleep(0.5)
-        await page.wait_for_load_state("domcontentloaded")
+            # Check if we have a pop up
+            await check_pop_up(page, bot, index='4', button='button.next')  # First we check if there is error mesage
+        # await asyncio.sleep(0.5)
+        await page.wait_for_load_state('networkidle')
 
 
 async def is_error_page(update, bot, message=None):
@@ -360,37 +195,34 @@ async def is_error_page(update, bot, message=None):
 
 async def download_pdf_preview(page, bot, index=''):
     try:
-        # Wait for the download to complete
-        async with page.expect_download() as download_info:
-            await page.click('input[type="submit"][value="PDF Preview"]')
-            try:
-                # Check if we have a pop up
-                await check_pop_up(page, bot, index='4')  # we will quickly cehck if there is pop up
+        if int(index) == 10:
+            # Wait for the download to complete
+            async with page.expect_download() as download_info:
+                await page.click('input[type="submit"][value="PDF Preview"]')
+                try:
+                    # Check if we have a pop up
+                    await check_pop_up(page, bot, index='4')  # we will quickly cehck if there is pop up
 
-                await page.click('input[type="submit"][value="PDF Preview"]')  # click the pdf again after 3 secs
-            except:
-                pass
+                    await page.click('input[type="submit"][value="PDF Preview"]')  # click the pdf again after 3 secs
+                except:
+                    pass
 
-            # try:
-            #     if index =='8':
-            #
-            #
-            #         pass # Check if there is any errror in the page 7
-            # except:
-            #     pass
 
-            download = await download_info.value
-            print(download)
+                download = await download_info.value
+                print(download)
 
-        # Specify the destination path for the downloaded file
-        destination_path = 'download/visa_form_preview.pdf'
+            # Specify the destination path for the downloaded file
+            destination_path = 'download/visa_form_preview.pdf'
 
-        # Move the downloaded file to the desired location with the correct extension
-        await download.save_as(destination_path)
+            # Move the downloaded file to the desired location with the correct extension
+            await download.save_as(destination_path)
 
-        # Send the renamed file to Telegram
-        with open(destination_path, 'rb') as file:
-            await bot.message.reply_document(document=file, caption=f"Page{index}")
+            # Send the renamed file to Telegram
+            with open(destination_path, 'rb') as file:
+                await bot.message.reply_document(document=file, caption=f"Page{index}")
+
+        else:
+            return
     except Exception as e:
         print(e)
 
@@ -425,25 +257,32 @@ async def get_error_message(page):
     return None
 
 
-async def check_pop_up(page, update=None, bot=None, index=''):
+async def check_pop_up(page, update=None, bot=None, button=None, index=''):
     # wait for at least 5 secs
-    await delay(5)
-    popup_exists = await page.query_selector('#popup_container')
-    if popup_exists:
-        # Click the "OK" button
-        await page.click('#popup_ok')
-
+    try:
         await delay(3)
+        popup_exists = await page.query_selector('#popup_container')
+        if popup_exists:
+            # Click the "OK" button
+            await page.click('#popup_ok')
+
+            await delay(3)
+            await page.click(button)
+
+        return popup_exists is not None
+    except:
+        pass
 
         # await page.click('input[type="submit"][value="PDF Preview"]') # click the pdf again after 3 secs
 
         # await update.edit_text("Downloading pdf.....")
         # await download_pdf_preview(page, bot, index)
 
-    return popup_exists is not None
+
 
 
 async def handle_next_button(page, update, bot):
+
     while True:
         is_error = await check_error_message(page)
         if is_error:
@@ -454,7 +293,7 @@ async def handle_next_button(page, update, bot):
             recent_message = await is_error_page(update, bot, message=error_message)
             # check error message
             await page.click("button.next")
-            await page.wait_for_load_state("domcontentloaded")
+            await page.wait_for_load_state('networkidle')
 
 
         else:
@@ -1063,6 +902,7 @@ async def fourth_page(update, page, data):
 
 
 async def fifth_page(update, page, data):
+    # input("wait")
     # Handle Financial Support Options
     await update.edit_text("Answering Financial Support Options question...")
     financial_support_options = []
@@ -1070,6 +910,7 @@ async def fifth_page(update, page, data):
     if data.get("QHasThirdPartyFinancialUndertaking", "true").lower() == "true":
         financial_support_options.append("HasThirdPartyFinancialUndertaking")
         await page.check("#FinancialSupportOptions_1")
+
 
     if data.get("QHasSufficientFunds", "true").lower() == "true":
         financial_support_options.append("HasSufficientFunds")
@@ -1111,63 +952,7 @@ async def fifth_page(update, page, data):
 ######    ######     ######    ######    ######    ######    ######    ######    ######    ######
 
 
-# async def sixth_page(update, page, data):
-#     # Handle Tuberculosis (TB) question
-#     await update.edit_text("Answering Tuberculosis (TB) question...")
-#     tb_option, tb_details = await handle_question(page, "QTB", data.get("QTB", "false"), data.get("QTBDetails", ""))
-#
-#     # Handle Renal Dialysis question
-#     await update.edit_text("Answering Renal Dialysis question...")
-#     renal_dialysis_option, renal_dialysis_details = await handle_question(page, "QRenalDialysis",
-#                                                                           data.get("QRenalDialysis", "false"),
-#                                                                           data.get("QRenalDialysisDetails", ""))
-#
-#     # Handle Hospital Care question
-#     await update.edit_text("Answering Hospital Care question...")
-#     hospital_care_option, hospital_care_details = await handle_question(page, "QHospitalCare",
-#                                                                         data.get("QHospitalCare", "false"),
-#                                                                         data.get("QHospitalCareDetails", ""))
-#
-#     # Handle Residential Care question
-#     await update.edit_text("Answering Residential Care question...")
-#     residential_care_option, residential_care_details = await handle_question(page, "QResidentialCare",
-#                                                                               data.get("QResidentialCare", "false"),
-#                                                                               data.get("QResidentialCareDetails", ""))
-#
-#     # Handle Special Education Services question
-#     await update.edit_text("Answering Special Education Services question...")
-#     special_education_option, special_education_details = await handle_question(page, "QSpecialEducationServices",
-#                                                                                 data.get("QSpecialEducationServices",
-#                                                                                          "false"), data.get(
-#             "QSpecialEducationServicesDetails", ""))
-#
-#     # Handle Health Insurance Declaration
-#     await update.edit_text("Answering Health Insurance Declaration...")
-#     await page.check("#QHeathIncDec")
-#
-#     # Continue to the next page
-#     await delay(5)
-#     # await update.edit_text("Moving to the next page...")
-#     # await page.click('input[name="_continueButton"]')
-#
-#
-# async def handle_question(page, question_id, option_value, details_value):
-#     option_id = await handle_radio_option(page, question_id, option_value)
-#     details = await handle_text_input(page, f"{question_id}Details", details_value, option_id == f"{question_id}_1")
-#     return option_id, details
-#
-#
-# async def handle_radio_option(page, question_id, option_value):
-#     option_id = f"{question_id}_{int(option_value.lower() == 'true') + 1}"
-#     await page.click(f"#{option_id}")
-#     return option_id
-#
-#
-# async def handle_text_input(page, input_id, input_value, should_fill):
-#     print(input_value, should_fill, input_id)
-#     if should_fill:
-#         await page.fill(f"#{input_id}", input_value)
-#     return input_value
+
 
 async def sixth_page(update, page, data):
     # Handle Tuberculosis (TB) question
@@ -1475,156 +1260,6 @@ async def ninth_page(update, page, data):
         await page.check("#QNZContacts_2")
 
 
-######    ######     ######    ######    ######    ######    ######    ######    ######    ######
-
-######    ######     ######    ######    ######    ######    ######    ######    ######    ######
-
-# import re
-#
-# async def tenth_page(page, data, update):
-#     # Handle QApplyOnBehalf question
-#     apply_on_behalf_option, _ = await handle_question_9(
-#         page, "QApplyOnBehalf", "Are you completing this form on behalf of someone else?", "Yes/No", "true"
-#     )
-#
-#     # Handle QApplyOnBehalfType question
-#     if apply_on_behalf_option == "true":
-#         apply_on_behalf_type_option, _ = await handle_question_9(
-#             page, "QApplyOnBehalfType", "In what capacity are you completing this form?",
-#             "Licensed immigration adviser/Exempt from licensing (lawyer, offshore student agent, informal advice or other exemption)/Parent or guardian of a dependent child who is under 18 years of age/Assisting the applicant with recording information on the form",
-#             "5f8e7612-416f-4e40-bec8-478068de48af"
-#         )
-#
-#         # Handle licensed immigration adviser questions
-#         if apply_on_behalf_type_option == "5f8e7612-416f-4e40-bec8-478068de48af":
-#             licence_details = await handle_dropdown_9(page, "QLicenceDetails", "What type of licence do you hold?", data.get("QLicenceDetails", ""))
-#             if licence_details == "958552fa-03a8-44a3-9158-8487761651ee":
-#                 limited_details = await handle_text_input_9(page, "QLimitedDetails", "Provide the conditions of your licence as specified in the register", data.get("QLimitedDetails", ""))
-#             licence_number = await handle_text_input_9(page, "QLicenceNumber", "Provide your licence number", data.get("QLicenceNumber", ""))
-#
-#     # Handle assisting person details
-#     assisting_person_last_name = await handle_text_input_9(page, "QAssistingPersonLastName", "Family/last name", data.get("QAssistingPersonLastName", ""))
-#     assisting_person_first_name = await handle_text_input_9(page, "QAssistingPersonFirsttName", "Given/first name(s)", data.get("QAssistingPersonFirsttName", ""))
-#     nz_business_number = await handle_text_input_9(page, "QNZBusinessNumber", "New Zealand Business Number", data.get("QNZBusinessNumber", ""), validate_nzbn_9)
-#     assisting_person_company_name = await handle_text_input_9(page, "QAssistingPersonCompanyName", "Company name (if applicable)", data.get("QAssistingPersonCompanyName", ""))
-#     assisting_person_address = await handle_text_input_9(page, "QAssistingPersonAddress", "Address", data.get("QAssistingPersonAddress", ""))
-#     assisting_person_telephone = await handle_telephone_9(page, "QAssistingPersonTelephone", data.get("QAssistingPersonTelephone_cc", ""), data.get("QAssistingPersonTelephone_ac", ""), data.get("QAssistingPersonTelephone_num", ""))
-#     assisting_person_mobile = await handle_telephone_9(page, "QAssistingPersonMobile", data.get("QAssistingPersonMobile_cc", ""), None, data.get("QAssistingPersonMobile_num", ""))
-#     assisting_person_email = await handle_text_input_9(page, "QAssistingPersonEmail", "Email", data.get("QAssistingPersonEmail", ""))
-#
-#     await update.edit_text("Moving to the next page...")
-#     await page.click('input[name="_continueButton"]')
-#
-# # Helper functions
-# async def handle_question_9(page, question_id, question_text, options_text, default_option):
-#     options = options_text.split("/")
-#     selected_option = await handle_radio_options_9(page, question_id, question_text, options, default_option)
-#     return selected_option, options
-#
-# async def handle_radio_options_9(page, question_id, question_text, options, default_option):
-#     radio_group = await page.query_selector_all(f'input[name="{question_id}"]')
-#     selected_option = None
-#     async for radio_option in radio_group:
-#         option_text = await page.evaluate('el => el.nextElementSibling.textContent', radio_option)
-#         if option_text.strip() in options:
-#             is_checked = await page.evaluate('el => el.checked', radio_option)
-#             if is_checked or (not selected_option and option_text.strip() == default_option):
-#                 selected_option = await radio_option.get_attribute('value')
-#     return selected_option
-#
-# async def handle_dropdown_9(page, question_id, question_text, default_option):
-#     dropdown = await page.query_selector(f'select[id="{question_id}"]')
-#     if dropdown:
-#         options = await page.evaluate('''el => {
-#             const options = Array.from(el.options).map(o => [o.value, o.textContent]);
-#             return options;
-#         }''', dropdown)
-#         for option_value, option_text in options:
-#             if option_value == default_option or (not default_option and option_text.strip() == 'Full'):
-#                 await dropdown.select_option(option_value)
-#                 return option_value
-#     return None
-#
-# async def handle_text_input_9(page, question_id, question_text, default_value, validator=None):
-#     input_field = await page.query_selector(f'input[id="{question_id}"], textarea[id="{question_id}"]')
-#     if input_field:
-#         await input_field.fill(default_value)
-#         if validator:
-#             value = await input_field.get_attribute('value')
-#             if not validator(value):
-#                 # Handle invalid input
-#                 pass
-#         return await input_field.get_attribute('value')
-#     return None
-#
-# async def handle_telephone_9(page, question_id, country_code, area_code, number):
-#     cc_field = await page.query_selector(f'input[id="{question_id}_cc"]')
-#     ac_field = await page.query_selector(f'input[id="{question_id}_ac"]')
-#     num_field = await page.query_selector(f'input[id="{question_id}_num"]')
-#     if cc_field and num_field:
-#         await cc_field.fill(country_code)
-#         await num_field.fill(number)
-#         if ac_field:
-#             await ac_field.fill(area_code)
-#     return f"{country_code} {area_code} {number}" if area_code else f"{country_code} {number}"
-#
-# def validate_nzbn_9(nzbn):
-#     pattern = r'^94\d{11}$'
-#     return bool(re.match(pattern, nzbn))
-######    ######     ######    ######    ######    ######    ######    ######    ######    ######
-
-######    ######     ######    ######    ######    ######    ######    ######    ######    ######
-
-# async def tenth_page(update, page, data):
-#     # Retrieve values from the CSV file using data.get
-#     apply_on_behalf = data.get("QApplyOnBehalf", "yes")  # Default value is "No" if not found
-#     apply_on_behalf_type = data.get("QApplyOnBehalfType",
-#                                     "Licensed immigration adviser")  # Default value is "Licensed immigration adviser" if not found
-#     licence_details = data.get("QLicenceDetails", "Full")  # Default value is "Full" if not found
-#     limited_details = data.get("QLimitedDetails", "")
-#     licence_number = data.get("QLicenceNumber", "")
-#     assisting_person_last_name = data.get("QAssistingPersonLastName", "")
-#     assisting_person_first_name = data.get("QAssistingPersonFirsttName", "")
-#     nz_business_number = data.get("QNZBusinessNumber", "")
-#     assisting_person_company_name = data.get("QAssistingPersonCompanyName", "")
-#     assisting_person_address = data.get("QAssistingPersonAddress", "")
-#     assisting_person_telephone = data.get("QAssistingPersonTelephone", "")
-#     assisting_person_mobile = data.get("QAssistingPersonMobile", "")
-#     assisting_person_email = data.get("QAssistingPersonEmail", "")
-#
-#     print("apply_on_behalf", apply_on_behalf)
-#
-#     # Choose "Yes" or "No" for the first question
-#     if apply_on_behalf.lower() == "yes":
-#         await page.click('input#QApplyOnBehalf_1')  # Click "Yes" option
-#
-#         # Choose the selected option for the second question
-#         await page.click(f'input[name="QApplyOnBehalfType"][value="{apply_on_behalf_type}"]')
-#
-#         # Check if the selected option should be "Full" for the third question
-#         if apply_on_behalf_type == "Licensed immigration adviser":
-#             await page.select_option('select#QLicenceDetails',
-#                                      value='1a657404-e726-4846-bb5b-84e7796e8e51')  # Select "Full" option
-#
-#         # Fill in the details for the additional fields
-#         await page.fill('#QLimitedDetails', limited_details)
-#         await page.fill('#QLicenceNumber', licence_number)
-#         await page.fill('#QAssistingPersonLastName', assisting_person_last_name)
-#         await page.fill('#QAssistingPersonFirsttName', assisting_person_first_name)
-#         await page.fill('#QNZBusinessNumber', nz_business_number)
-#         await page.fill('#QAssistingPersonCompanyName', assisting_person_company_name)
-#         await page.fill('#QAssistingPersonAddress', assisting_person_address)
-#         await page.fill('#QAssistingPersonTelephone', assisting_person_telephone)
-#         await page.fill('#QAssistingPersonMobile', assisting_person_mobile)
-#         await page.fill('#QAssistingPersonEmail', assisting_person_email)
-#
-#     else:
-#         await page.click('input#QApplyOnBehalf_2')  # Click "No" option
-
-# Continue to the next page
-# await update.edit_text("Moving to the next page...")
-# await page.click('input[name="_continueButton"]')
-
 async def tenth_page(update, page, data):
     # Retrieve values from the CSV file using data.get
     apply_on_behalf = data.get("QApplyOnBehalf", "yes")  # Default value is "No" if not found
@@ -1733,6 +1368,7 @@ async def main(update=None, bot=None):
                 # data = next(reader)  # Assuming a single row in the CSV file
                 data = transform_data(list(reader))
 
+
             # Login credentials
             await first_page(update, page, data)
 
@@ -1751,52 +1387,13 @@ async def main(update=None, bot=None):
             # await asyncio.sleep(.1)
 
             await second_page(update, page, data)
-            # # Click "Yes" or "No" for "Are you applying for a student visa?"
-            # await update.edit_text("Clicking student visa option.........")
-            # student_visa_option = "1" if data["SCStudentVisa"].lower() == "yes" else "2"
-            # await page.click(f"#SCStudentVisa_{student_visa_option}")
-            # await asyncio.sleep(0.1)
-            #
-            # # Click "Yes" or "No" for "Do you have a MasterCard, Visa or UnionPay card to pay for this application?"
-            # await update.edit_text("Clicking credit card option.........")
-            # credit_card_option = "1" if data["SCCreditCard"].lower() == "yes" else "2"
-            # await page.click(f"#SCCreditCard_{credit_card_option}")
-            # await asyncio.sleep(0.1)
-            #
-            # # Click "Yes" or "No" for "Are you applying for a student visa as a dependent child of a New Zealand visa holder or applicant?"
-            # await update.edit_text("Clicking group app option.........")
-            # group_app_option = "1" if data["SCGroupApp"].lower() == "yes" else "2"
-            # await page.click(f"#SCGroupApp_{group_app_option}")
-            # await asyncio.sleep(0.1)
-            #
-            # # Click "Yes" or "No" for "Are you an Australian citizen or permanent resident?"
-            # await update.edit_text("Clicking Australian option.........")
-            # australian_option = "1" if data["SCAustralian"].lower() == "yes" else "2"
-            # await page.click(f"#SCAustralian_{australian_option}")
-            # await asyncio.sleep(0.1)
-            #
-            #
-            #
-            #
-            # # Click "Yes" or "No" for "Have you claimed refugee or protection status in New Zealand?"
-            # await update.edit_text("Clicking refugee option.........")
-            # refugee_option = "1" if data["SCRefugee"].lower() == "yes" else "2"
-            # await page.click(f"#SCRefugee_{refugee_option}")
-            # await asyncio.sleep(0.1)
-            #
-            # # Click "Yes" or "No" for "Are you applying under a special Vocational Trainees category?"
-            # await update.edit_text("Clicking vocational trainee option.........")
-            # vocational_trainee_option = "1" if data["SCVocationalTrainee"].lower() == "yes" else "2"
-            # await page.click(f"#SCVocationalTrainee_{vocational_trainee_option}")
-            # await asyncio.sleep(0.1)
-            #
-            # await page.evaluate('window.scrollTo(0, document.body.scrollHeight)')
-            # await asyncio.sleep(6)
+
 
             recent_message = await is_next_page(update, bot=bot, page=page)  # should i proceed to next page or not?
 
             if recent_message:
                 update = recent_message
+
 
             await handle_next_button(page, update, bot)  # this is Page 2
 
@@ -1805,108 +1402,6 @@ async def main(update=None, bot=None):
 
             await third_page(update, page, data)
 
-            # # Fill in personal information
-            # await update.edit_text("Filling personal information.........")
-            # await page.type("#QFamilyName", data["QFamilyName"])
-            # await page.type("#QFirstName", data["QFirstName"])
-            # await page.type("#QMiddleName", data["QMiddleName"])
-            #
-            # # Select title
-            # await page.select_option("#Qtitle", label=data["Qtitle"])
-            #
-            # # Fill in additional other names section
-            # await page.fill("#OtherNames-0-QFamilyNameOther", data["OtherNames-0-QFamilyNameOther"])
-            # await asyncio.sleep(3)
-            # await page.fill("#OtherNames-0-QFirstNameOther", data["OtherNames-0-QFirstNameOther"])
-            # await asyncio.sleep(3)
-            # await page.fill("#OtherNames-0-QMiddleNameOther", data["OtherNames-0-QMiddleNameOther"])
-            # await asyncio.sleep(3)
-            # await page.select_option("#OtherNames-0-NameType", label=data["OtherNames-0-NameType"])
-            #
-            # await asyncio.sleep(1)
-            #
-            # # Select gender
-            # await update.edit_text("Selecting gender.........")
-            # gender_option = "1" if data["QGender"].lower() == "female" else "2"
-            # await page.click(f"#QGender_{gender_option}")
-            #
-            # # Select date of birth
-            # await update.edit_text("Selecting date of birth.........")
-            # await page.select_option("#QDOB_day", label=data["QDOB_day"])
-            # await page.select_option("#QDOB_month", label=data["QDOB_month"])
-            # await page.select_option("#QDOB_year", label=data["QDOB_year"])
-            #
-            # # Select country of birth
-            # await update.edit_text("Selecting country of birth.........")
-            # await page.select_option("#QCountryOfBirth", label=data["QCountryOfBirth"])
-            # await asyncio.sleep(3)
-            #
-            # # Fill the State/Province/Region field
-            # await update.edit_text("Filling state/province/region.........")
-            # await page.fill("#QStateOfBirth", data["QStateOfBirth"])
-            # await asyncio.sleep(1)
-            #
-            # # Fill the Town/City
-            # await update.edit_text("Filling city of birth.........")
-            # await page.fill("#QCityOfBirth", data["QCityOfBirth"])
-            #
-            # # Fill the Passport Number field
-            # await update.edit_text("Filling passport number.........")
-            # await page.fill("#QPassportNbr", data["QPassportNbr"])
-            #
-            # # Select the country or territory of the passport by its text
-            # await page.evaluate('window.scrollBy(0, 300)')
-            # await asyncio.sleep(3)
-            # await update.edit_text("Selecting passport issue country.........")
-            # await page.select_option("#QPassportIssueCountry", label=data["QPassportIssueCountry"])
-            # await asyncio.sleep(3)
-            #
-            # # Choose the expiry date for the passport
-            # await update.edit_text("Selecting passport expiry date.........")
-            # await page.select_option("#QPassportExpiryDate_day", value=data["QPassportExpiryDate_day"])
-            # await asyncio.sleep(1)
-            # await page.select_option("#QPassportExpiryDate_month", value=data["QPassportExpiryDate_month"])
-            # await asyncio.sleep(1)
-            # await page.select_option("#QPassportExpiryDate_year", value=data["QPassportExpiryDate_year"])
-            # await asyncio.sleep(1)
-            #
-            # # Select "Single" option
-            # await update.edit_text("Selecting partnership status.........")
-            # await page.select_option("#QPartnershipStatus", label=data["QPartnershipStatus"])
-            #
-            # # Choose "No"
-            # await update.edit_text("Choosing applied visa before.........")
-            # await page.click("#QAppliedVisaBefore_2")  # Have you previously applied for a visa for New Zealand?
-            #
-            # # Residential Address
-            # # Fill in the country
-            # await update.edit_text("Filling residential address.........")
-            # await page.select_option("#QAppCountry", data["QAppCountry"])
-            # await asyncio.sleep(2)  # 1 second delay
-            #
-            # # Fill in the street address
-            # await page.type("#QAppAddress1", data["QAppAddress1"])
-            # await asyncio.sleep(2)  # 1 second delay
-            #
-            #
-            # # Fill in the town/city
-            # await page.type("#QAppCity", data["QAppCity"])
-            # await asyncio.sleep(1)  # 1 second delay
-            #
-            # # Fill in the state/province/region
-            # await page.select_option("#ResidentialCountryRegionStateLookupID",
-            #                          data["ResidentialCountryRegionStateLookupID"])
-            # await asyncio.sleep(1)  # 1 second delay
-            #
-            # # Fill in the ZIP/post code
-            # await page.type("#QAppPostCode", data["QAppPostCode"])
-            # await asyncio.sleep(1)  # 1 second delay
-            #
-            # # Fill contact form
-            # await fill_contact_form(page, data)
-            #
-            # # Select group and Agree
-            # await select_group_and_agree(page, data)
 
             await update.edit_text("Downloading pdf.....")
             await download_pdf_preview(page, bot, index='3')
@@ -2030,8 +1525,8 @@ async def main(update=None, bot=None):
                 reply_to_message_id=bot.message.message_id)
 
             while 1:
-                await asyncio.sleep(2)
-                await browser.close()
+                await asyncio.sleep(5)
+                # await browser.close()
     except KeyboardInterrupt:
 
         new_data = {"is_launched": False, "user_confirmed": False}
