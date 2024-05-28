@@ -136,7 +136,7 @@ async def is_next_page(update, bot, page=None, mode=None):
                     # Check if we have a pop up
                     await check_pop_up(page, bot, index='4', button='button#next')  # First we check if there is error mesage
 
-                    await page.wait_for_load_state('networkidle')
+                    await page.wait_for_load_state(state='domcontentloaded')
 
 
                 else:
@@ -145,7 +145,7 @@ async def is_next_page(update, bot, page=None, mode=None):
                     await check_pop_up(page, bot, index='4', button='button.next')  # First we check if there is error mesage
 
                 # await asyncio.sleep(0.5)
-                await page.wait_for_load_state('networkidle')
+                await page.wait_for_load_state(state='domcontentloaded')
 
                 break  # Exit the loop if user_confirmed is True
 
@@ -169,7 +169,7 @@ async def is_next_page(update, bot, page=None, mode=None):
             # Check if we have a pop up
             await check_pop_up(page, bot, index='4', button='button.next')  # First we check if there is error mesage
         # await asyncio.sleep(0.5)
-        await page.wait_for_load_state('networkidle')
+        await page.wait_for_load_state(state='domcontentloaded')
 
 
 async def is_error_page(update, bot, message=None):
@@ -293,7 +293,7 @@ async def handle_next_button(page, update, bot):
             recent_message = await is_error_page(update, bot, message=error_message)
             # check error message
             await page.click("button.next")
-            await page.wait_for_load_state('networkidle')
+            await page.wait_for_load_state(state='domcontentloaded')
 
 
         else:
@@ -1398,7 +1398,7 @@ async def main(update=None, bot=None):
             await handle_next_button(page, update, bot)  # this is Page 2
 
             # await page.click("button.next")
-            # await page.wait_for_load_state("networkidle")
+            #   await page.wait_for_load_state(state='domcontentloaded')
 
             await third_page(update, page, data)
 
@@ -1500,6 +1500,8 @@ async def main(update=None, bot=None):
             await handle_next_button(page, update, bot)  # this is Page 8
 
             await tenth_page(update, page, data)
+
+
 
             await update.edit_text("Downloading pdf.....")
             await download_pdf_preview(page, bot, index='10')
